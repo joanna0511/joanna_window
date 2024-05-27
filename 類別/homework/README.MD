@@ -6,5 +6,5 @@
 [ipynb](https://github.com/joanna0511/joanna_window/blob/main/%E9%A1%9E%E5%88%A5/homework/json.ipynb)
 
 
-[.json](https://https://github.com/joanna0511/joanna_window/blob/main/%E9%A1%9E%E5%88%A5/homework/json.ipynb)
+[.json](https://github.com/joanna0511/joanna_window/blob/main/%E9%A1%9E%E5%88%A5/homework/aqi.json)
 
