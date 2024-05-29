@@ -11,4 +11,6 @@
 
 ...
 
-## [index1.py]()
+## [hw03.py](https://github.com/joanna0511/joanna_window/blob/main/window_layout/index1.py)
+
+![index1.py](./images/pic1.PNG)
