@@ -6,7 +6,7 @@
 ![index4.py](./images/pic4.PNG)
 
 
-## hw02.py(https://github.com/joanna0511/joanna_window/blob/main/window_layout/index3.py)
+## [hw02.py](https://github.com/joanna0511/joanna_window/blob/main/window_layout/index3.py)
 ![index3.py](./images/pic3.PNG)
 
 
