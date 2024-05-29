@@ -7,13 +7,16 @@ class Window(tk.Tk):
         self.title("pack1")
         self.geometry('300x200')
 
-        ttk.Button(self,text="Top").pack()
+        ttk.Button(self,text="大家排隊").pack()
         
 
-        ttk.Button(self,text="Middle").pack()
+        ttk.Button(self,text="A1").pack()
         
 
-        ttk.Button(self,text="Bottom").pack()
+        ttk.Button(self,text="A2").pack()
+        ttk.Button(self,text="A3").pack()
+        ttk.Button(self,text="A4").pack()
+
 
 
 if __name__ == '__main__':
