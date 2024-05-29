@@ -1,15 +1,14 @@
 ## HW(issue#112)
 ### 作業內容：請建立3個以上的tkinter的layout的主檔
 
-## hw01.py
-![index1.py](./images/)
+## [hw01.py]
 
-...
+![index4.py](./images/pic4.PNG)
+
 
 ## hw02.py
-![index2.py]()
+![index3.py](./images/pic3.PNG)
 
-...
 
 ## [hw03.py](https://github.com/joanna0511/joanna_window/blob/main/window_layout/index1.py)
 
