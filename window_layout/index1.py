@@ -8,11 +8,7 @@ class Window(tk.Tk):
         self.geometry('300x200')
 
         ttk.Button(self,text="大家排隊").pack()
-        
-
         ttk.Button(self,text="A1").pack()
-        
-
         ttk.Button(self,text="A2").pack()
         ttk.Button(self,text="A3").pack()
         ttk.Button(self,text="A4").pack()
