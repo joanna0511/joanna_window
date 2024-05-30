@@ -4,7 +4,7 @@ from tkinter import ttk
 class Window(tk.Tk):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
-        self.title("pack1")
+        self.title("pack2")
         self.geometry('500x200')
 
         ttk.Button(self,text="Top").pack(fill='x')
