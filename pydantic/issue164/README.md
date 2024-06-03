@@ -5,4 +5,4 @@
 
 ### [pydantic.ipynb](https://github.com/joanna0511/joanna_window/blob/main/pydantic/issue164/pydantic_01.ipynb)
 
-### [data.json]()
+### [data.json](https://github.com/joanna0511/joanna_window/blob/main/pydantic/issue164/data.json)
