@@ -1,3 +1,4 @@
+
 from pprint import pprint
 import tkinter as tk
 from tkinter import ttk
@@ -44,9 +45,10 @@ class ShowInfo(Dialog):
         super().__init__(**kwargs)
     
     def body(self, master):
-        text = tk.Text(self,height=8,state='disabled')
+        text = tk.Text(self,height=8,font=('Helvetica',25),width=40)
         text.pack(padx=10,pady=10)
-        
+        text.insert(tk.INSERT,"測試的文字")
+        text.config(state='disabled')
         return None
 
 
