@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-
+# login視窗,2個輸入框, 一個按鈕
 
 class App(tk.Tk):
     def __init__(self):

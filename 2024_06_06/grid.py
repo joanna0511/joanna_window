@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter.simpledialog import Dialog
 from tkinter import messagebox
-
+# 輸入新密碼, 3個輸入框, 2個按鈕ok,cancel
 
 class GetPassword(Dialog):
 
