@@ -5,6 +5,7 @@ from ttkthemes import ThemedTk
 import tools
 from tkinter import messagebox
 from tkinter.simpledialog import Dialog
+from datetime import datetime
 
 class Window(ThemedTk):
     def __init__(self,**kwargs):
@@ -39,9 +40,16 @@ class Window(ThemedTk):
                   
 
     def click1(self):
-        data:list[dict] = self.download_parse_data()
-        sorted_data:list[dict]=sorted(data,key=lambda value:value['agi'])
-        best_aqi:list[dict]=sorted_data[:5]
+        if (tools.AQI.aqi_records is None) or (tools.AQI.update_time is None):
+            tools.AQI.aqi_records = self.download_parse_data()
+            tools.AQI.update_time = datetime.now()
+        elif((datetime.now()-tools.AQI.update_time).seconds >= 60 * 60):
+            tools.AQI.aqi_records = self.download_parse_data()
+            tools.AQI.update_time = datetime.now()       
+
+        data:list[dict] = tools.AQI.aqi_records
+        sorted_data:list[dict] = sorted(data,key=lambda value:value['aqi'])
+        best_aqi:list[dict] = sorted_data[:5]
         print(best_aqi)
               
             
