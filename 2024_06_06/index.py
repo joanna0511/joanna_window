@@ -74,8 +74,8 @@ class Window(ThemedTk):
 
 class ShowInfo(Dialog):
     def __init__(self,parent:Misc,title:str|None = None,message:str=""):
-        self.message = message
-        super().__init__(parent=parent,title=title)        
+        self.message = message #此行一定要置於super之前
+        super().__init__(parent=parent,title=title)   # 最後才執行     
 
     
     def body(self, master: Frame) -> Misc | None:
