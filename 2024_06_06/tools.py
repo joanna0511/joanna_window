@@ -1,4 +1,3 @@
-
 import requests
 from  requests import JSONDecodeError
 from pydantic import BaseModel,RootModel,Field,field_validator
