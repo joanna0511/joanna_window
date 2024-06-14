@@ -2,11 +2,9 @@ from ttkthemes import ThemedTk
 import tkinter as tk
 from tkinter import ttk, messagebox
 import data
+from data import FilterData
 
-def get_selected_site(sna:str,data:list[dict])->tuple[float]:
-    print(sna)
-    #print(data)
-    return(0,0)
+
 
 class Window(ThemedTk):
     def __init__(self,theme:str='arc',**kwargs):
@@ -30,7 +28,7 @@ class Window(ThemedTk):
         #=================================
         tableFrame = ttk.Frame(mainFrame)
         columns = ('sna', 'sarea', 'mday','ar','total','rent_bikes','retuen_bikes')
-        tree = ttk.Treeview(tableFrame, columns=columns, show='headings')
+        tree = ttk.Treeview(tableFrame, columns=columns, show='headings',selectmode='browse')
         # define headings
         tree.heading('sna', text='站點')
         tree.heading('sarea', text='行政區')
@@ -69,16 +67,16 @@ class Window(ThemedTk):
         mainFrame.pack(expand=True,fill=tk.BOTH,padx=10,pady=10)
 
     def item_selected(self,event):
-        tree=event.widget
+        tree = event.widget
         print(isinstance(tree,ttk.Treeview))
-
         for selected_item in tree.selection():
-            item=tree.item(selected_item)
-            record:list=item['values']
-            a,b=get_selected_site(sna=record[0],data=self.data)
+            item = tree.item(selected_item)
+            record:list = item['values']
+            a,b = FilterData.get_selected_site(sna=record[0],data=self.data)
             print(a)
             print(b)
-        
+
+
 
 
 

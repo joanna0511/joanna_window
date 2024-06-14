@@ -40,3 +40,12 @@ def load_data()->list[dict]:
     youbike_data:Youbike_Data = Youbike_Data.model_validate(all_data)
     data = youbike_data.model_dump()
     return data
+
+
+
+class FilterData(object):
+    @staticmethod
+    def get_selected_site(sna:str,data:list[dict]) -> tuple[float]:
+        print(sna)
+        #print(data)
+        return (0,0) 
