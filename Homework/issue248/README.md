@@ -1,4 +1,4 @@
-# 作業 issue#245
+# 作業 issue#248
 
 ## 內容:請將pythonWindow內的繪圖部份,做一次 #248
 
