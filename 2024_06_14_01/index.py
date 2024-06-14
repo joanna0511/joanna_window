@@ -76,15 +76,10 @@ class Window(ThemedTk):
             site_data:Info = FilterData.get_selected_coordinate(sna=record[0],data=self.data)
             CustomMessagebox(self,title=site_data.sna,site=site_data)
             
+ 
 
-
-
-
-
+ 
     
-    
-
-
 
 def main():
     window = Window(theme='breeze')
