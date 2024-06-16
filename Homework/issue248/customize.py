@@ -1,17 +1,17 @@
-from tkinter import Tk,Canvas
+from tkinter import Tk, Canvas
 
-class RedBall(Canvas):
-    def __init__(self,master,**kw):
-        super().__init__(master=master,**kw)
-        self.configure(width=20)
-        self.configure(height=20)
-        self.create_oval(5,5,15,15,fill='#333333')
+class BlueSquare(Canvas):
+    def __init__(self, master, **kw):
+        super().__init__(master=master, **kw)
+        self.configure(width=80, height=80)  # 調整畫布寬度和高度
+        self.create_rectangle(20, 20, 60, 60, fill='blue')  # 繪製藍色正方形
 
 class Window(Tk):
     def __init__(self):
         super().__init__()
-        redball = RedBall(self)
-        redball.pack()
+        self.geometry("300x200")  # 調整視窗大小
+        bluesquare = BlueSquare(self)
+        bluesquare.pack()
 
 if __name__ == "__main__":
     root = Window()
