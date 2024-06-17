@@ -63,23 +63,21 @@ class Window(ThemedTk):
         scrollbar = ttk.Scrollbar(tableFrame, orient=tk.VERTICAL, command=tree.yview)
         tree.configure(yscroll=scrollbar.set)
         scrollbar.grid(row=0, column=1, sticky='ns')
-        tableFrame.pack(expand=True,fill=tk.BOTH,padx=20,pady=20)
+        tableFrame.pack(padx=20,pady=20)
         #======================================
         self.pieChartFrame = PieChartFrame(mainFrame)
-        self.pieChartFrame.pack(expand=True,fill='both')
-        mainFrame.pack(expand=True,fill=tk.BOTH,padx=10,pady=10)
+        self.pieChartFrame.pack()
+        mainFrame.pack(padx=10,pady=10)
 
     def item_selected(self,event):
         tree = event.widget
         records:list[list] = []       
-        for selected_item in tree.selection()[:3]: #[:3]代表只可以選取3個, 多了也不會選取
+        for selected_item in tree.selection()[:3]: #[:3]代表只可以選取3個,多了也不會選取
             item = tree.item(selected_item)            
             record:list = item['values']
             records.append(record)
         self.pieChartFrame.infos = records
-        
-        
-            
+                    
 
 import matplotlib.pyplot as plt
 import numpy as np
