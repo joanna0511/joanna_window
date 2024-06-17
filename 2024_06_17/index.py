@@ -72,7 +72,7 @@ class Window(ThemedTk):
     def item_selected(self,event):
         tree = event.widget
         records:list[list] = []       
-        for selected_item in tree.selection():
+        for selected_item in tree.selection()[:3]: #[:3]代表只可以選取3個, 多了也不會選取
             item = tree.item(selected_item)            
             record:list = item['values']
             records.append(record)
@@ -90,7 +90,10 @@ class PieChartFrame(ttk.Frame):
         self.configure({'borderwidth':2,'relief':'groove'})
         #self.config({'borderwidth':2,'relief':'groove'})        
         #self['borderwidth'] = 2
-        #self['relief'] = 'groove'      
+        #self['relief'] = 'groove'
+        style = ttk.Style()
+        style.configure('abc.TFrame',background='#ffffff')
+        self.configure(style='abc.TFrame')     
 
     @property
     def infos(self)->None:
@@ -110,7 +113,7 @@ class PieChartFrame(ttk.Frame):
             total:int = data[4]
             rents:int = data[5]
             returns:int = data[6]
-            oneFrame = ttk.Frame(self)
+            oneFrame = ttk.Frame(self,style='abc.TFrame')
             ttk.Label(oneFrame,text="行政區:").grid(row=0,column=0,sticky='e')
             ttk.Label(oneFrame,text=area).grid(row=0,column=1,sticky='w')
 
@@ -143,10 +146,14 @@ class PieChartFrame(ttk.Frame):
             axes = figure.add_subplot()
             axes.pie(values,colors=colors,
                     labels=labels,
-                    labeldistance=0.4,
+                    labeldistance=1.2,
                     shadow=True,
                     autopct=lambda pct: func(pct, values),
                     textprops=dict(color="white"))
+            
+            axes.legend(title="rate:",
+                        loc="center left",
+                        bbox_to_anchor=(0, 0, 0, 2))
             
             canvas = FigureCanvasTkAgg(figure,oneFrame)
             canvas.draw()
@@ -171,11 +178,13 @@ def main():
     def on_closing():
         print("手動關閉視窗")
         window.destroy()
+        window.quit()
 
     
     window = Window(theme='breeze')
-    window.protocol("WM_DELETE_WINDOW", on_closing)
+    window.protocol("WM_DELETE_WINDOW", on_closing)    
     window.mainloop()
+    
 
 if __name__ == '__main__':
     main()
