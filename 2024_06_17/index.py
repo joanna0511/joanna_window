@@ -1,6 +1,6 @@
 from ttkthemes import ThemedTk
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox,Misc
 import data
 from data import FilterData,Info
 from tools import CustomMessagebox
@@ -65,21 +65,38 @@ class Window(ThemedTk):
         scrollbar.grid(row=0, column=1, sticky='ns')
         tableFrame.pack(expand=True,fill=tk.BOTH,padx=20,pady=20)
         #======================================
+        pieChartFrame = PieChartFrame(mainFrame)
+        pieChartFrame.pack(expand=True,fill='both')
         mainFrame.pack(expand=True,fill=tk.BOTH,padx=10,pady=10)
 
     def item_selected(self,event):
         tree = event.widget
-        print(isinstance(tree,ttk.Treeview))
         for selected_item in tree.selection():
             item = tree.item(selected_item)
             record:list = item['values']
-            site_data:Info = FilterData.get_selected_coordinate(sna=record[0],data=self.data)
-            CustomMessagebox(self,title=site_data.sna,site=site_data)
+            print(record)
             
- 
 
- 
+
+class PieChartFrame(ttk.Frame):
+    def __init__(self,master:Misc,**kwargs):
+        super().__init__(master=master,**kwargs)
+        self.configure({'borderwidth':2,'relief':'groove'})
+        #self.config({'borderwidth':2,'relief':'groove'})        
+        #self['borderwidth'] = 2
+        #self['relief'] = 'groove' 
+        canvas = tk.Canvas(self)
+        canvas.create_line(15, 30, 200,30)
+        canvas.create_line(300,35, 300, 200,dash=(8,2))
+        canvas.create_line(55,85,155,85,105,180,55,85)
+        canvas.pack(expand=True,fill='both')  
+        
+
+
     
+    
+
+
 
 def main():
     window = Window(theme='breeze')
