@@ -30,15 +30,15 @@ for i in range(9, len(tsmc)):
 
 # 繪製K值和D值
 plt.figure(figsize=(14, 7))
-plt.plot(tsmc.index, tsmc['K'], label='K 值', color='blue')  
-plt.plot(tsmc.index, tsmc['D'], label='D 值', color='red')  
-plt.title('KD 指標')  
-plt.xlabel('日期')  
-plt.ylabel('數值')  
+plt.plot(tsmc.index, tsmc['K'], label='K 值', color='blue')  # 修改部分
+plt.plot(tsmc.index, tsmc['D'], label='D 值', color='red')  # 修改部分
+plt.title('KD 指標')  # 修改部分
+plt.xlabel('日期')  # 修改部分
+plt.ylabel('數值')  # 修改部分
 plt.legend()
 plt.grid(True)
 plt.show()
 
 # 顯示最新的K值，格式化為小數點後兩位
 latest_k_value = format(tsmc['K'].iloc[-1], ".2f")
-#print("最新的K值為:", latest_k_value)  
+#print("最新的K值為:", latest_k_value)  # 修改部分
