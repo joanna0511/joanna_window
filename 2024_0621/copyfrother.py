@@ -8,7 +8,7 @@ start_date = "2023-01-01"
 end_date = "2023-06-21"
 
 # 獲取台積電股票數據
-data = pdr.get_data_yahoo(stock_code, start=start_date, end=end_date)
+#data = pdr.get_data_yahoo(stock_code, start=start_date, end=end_date)
 
 # 顯示前五行數據
 print(data.head())
