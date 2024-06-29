@@ -1,13 +1,14 @@
 import yfinance as yf
 import pandas as pd
 import time  # 導入 time 模組
+
 # 讀取csv檔
-stock_list = pd.read_csv(r'D:\test1\stock_id.csv')
+stock_list = pd.read_csv(r'D:\test1\stock_id.csv')  # 修改路徑格式
 stock_list.columns = ['stock_id', 'name']
 historical_data = pd.DataFrame()
-for i in stock_list.index:    
+for i in stock_list.index:
     # 抓取股票資料
-    stock_id = str(stock_list.loc[i, 'stock_id']) + '.TW'  # 強制轉換為字串
+    stock_id = stock_list.loc[i, 'stock_id'] + '.TW'
     data = yf.Ticker(stock_id)
     df = data.history(period="max")
     # 增加股票代號
@@ -15,4 +16,4 @@ for i in stock_list.index:
     # 合併
     historical_data = pd.concat([historical_data, df])
     time.sleep(0.8)
-historical_data.to_csv(r'D:\test1/historical_data.csv', index=False)
+historical_data.to_csv(r'D:\test1\historical_data.csv', index=False)  # 修改路徑格式
