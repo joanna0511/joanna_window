@@ -8,7 +8,7 @@ def main():
     with conn: #with conn會自動commit(),手動close
         with conn.cursor() as cursor: #自動close()
             sql = '''
-                CREATE TABLE IF NOT EXISTS youbike4(
+                CREATE TABLE IF NOT EXISTS youbike(
                 _id Serial Primary Key,
                 sna VARCHAR(50) NOT NULL,
                 sarea VARCHAR(50),
@@ -30,7 +30,7 @@ def main():
 
         with conn.cursor() as cursor:            
             insert_sql = '''
-            INSERT INTO youbike4(sna, sarea, ar, mday, updatetime, total, rent_bikes,return_bikes,lat,lng,act)
+            INSERT INTO youbike(sna, sarea, ar, mday, updatetime, total, rent_bikes,return_bikes,lat,lng,act)
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
             ON CONFLICT (sna, updateTime) DO NOTHING;
             '''

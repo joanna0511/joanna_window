@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS student (
 
 drop table student;
 drop table youbik;
-drop table youbike2;
+drop table youbike3;
 
-select * from youbike3;
+select * from youbike4;
 select * from youbike2;
 select * from youbike;
