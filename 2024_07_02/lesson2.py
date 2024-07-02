@@ -2,7 +2,7 @@ import psycopg2
 import data
 
 def main():    
-    conn = psycopg2.connect("postgresql://tvdi_et5g_user:rO4f8W7mB0kylH1UvACmrEKJSrznix20@dpg-cpscs956l47c73e3h0bg-a.singapore-postgres.render.com/tvdi_et5g")
+    conn = psycopg2.connect("postgresql://tvdi_postgresql_user:0Mr0CwwtkwsRkbXo7NIsoLO723sCtmQI@dpg-cpscso56l47c73e3h5b0-a.singapore-postgres.render.com/tvdi_postgresql")
     with conn: #with conn會自動commit(),手動close
         with conn.cursor() as cursor: #自動close()
             sql = '''
