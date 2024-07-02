@@ -1,8 +1,11 @@
 import psycopg2
 import data
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 def main():    
-    conn = psycopg2.connect("postgresql://tvdi_postgresql_user:0Mr0CwwtkwsRkbXo7NIsoLO723sCtmQI@dpg-cpscso56l47c73e3h5b0-a.singapore-postgres.render.com/tvdi_postgresql")
+    conn = psycopg2.connect(os.environ['POSTGRESQL_TOKEN'])
     with conn: #with conn會自動commit(),手動close
         with conn.cursor() as cursor: #自動close()
             sql = '''
