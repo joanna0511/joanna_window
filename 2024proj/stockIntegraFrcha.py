@@ -134,9 +134,10 @@ def display_chart(fig, toolbar=False):
     canvas.get_tk_widget().grid(row=0, column=2, rowspan=6)
     if toolbar:
         toolbar_frame = tk.Frame(root)
-        toolbar_frame.grid(row=7, column=2, sticky=tk.W)
+        toolbar_frame.grid(row=6, column=2, padx=10, pady=10)
         toolbar = NavigationToolbar2Tk(canvas, toolbar_frame)
         toolbar.update()
+        canvas.get_tk_widget().grid(row=0, column=2, rowspan=6)
 
 # 創建執行按鈕
 plot_button = tk.Button(root, text="執行", command=plot_chart, font=("Microsoft JhengHei", 14))
