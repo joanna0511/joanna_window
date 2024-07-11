@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter, DayLocator
+import numpy as np
 
 def plot_kd_chart(self, data):
     low_min = data['Low'].rolling(window=9).min()
@@ -48,9 +49,17 @@ def plot_normal_distribution(self, data):
         returns = data['Close'].pct_change().dropna()
         mu = returns.mean()
         sigma = returns.std()
+
         fig, ax = plt.subplots(figsize=(8, 4))
         count, bins, ignored = ax.hist(returns, bins=30, density=True, alpha=0.6, color='g')
         ax.plot(bins, 1/(sigma * np.sqrt(2 * np.pi)) * np.exp( - (bins - mu)**2 / (2 * sigma**2) ), linewidth=2, color='r')
         ax.set_title('常態分佈圖')
         self.display_chart(fig)
 # 其他方法類似...
+def plot_boxplot(self, data):
+    returns = data['Close'].pct_change().dropna()
+    fig, ax = plt.subplots(figsize=(8, 4))
+    ax.boxplot(returns, vert=False)
+    ax.set_title('盒鬚圖')
+    ax.set_xlabel('日回報率')
+    self.display_chart(fig)
