@@ -5,7 +5,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from matplotlib.dates import DateFormatter, DayLocator, date2num
+from matplotlib.dates import DateFormatter, DayLocator
 
 # 設置 matplotlib 使用支持中文的字體
 plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei']  # 使用微軟正黑體
@@ -49,9 +49,6 @@ def plot_chart():
             tk.messagebox.showerror("錯誤", f"無法獲取股票數據: {e}")
             return
 
-        # 移除沒有交易數據的日期
-        stock_data = stock_data.dropna()
-
         if chart_type == "KD指標圖":
             plot_kd_chart(stock_data)
         elif chart_type == "均價指標圖":
@@ -89,22 +86,32 @@ def plot_ma_chart(data):
     display_chart(fig)
 
 def plot_volume_chart(data):
+    # 將日期索引轉換為整數索引
+    data.reset_index(inplace=True)  # 重設索引
+    data['DateInt'] = data.index  # 創建一個整數索引列
+
     # 繪製均量指標圖
     data['VMA5'] = data['Volume'].rolling(window=5).mean()
     data['VMA23'] = data['Volume'].rolling(window=23).mean()
 
     fig, ax = plt.subplots(figsize=(8, 4))
-    dates = date2num(data.index.to_pydatetime())
-    ax.bar(dates, data['Volume'], width=1, label='Volume', color='lightblue')
-    ax.plot(dates, data['VMA5'], label='5-Day Volume MA', color='orange')
-    ax.plot(dates, data['VMA23'], label='23-Day Volume MA', color='green')
+    # 使用整數索引繪製長條圖，確保長條間隔一致
+    ax.bar(data['DateInt'], data['Volume'], label='Volume', color='lightblue')  # 更改了這裡
+    ax.plot(data['DateInt'], data['VMA5'], label='5-Day Volume MA', color='orange')  # 更改了這裡
+    ax.plot(data['DateInt'], data['VMA23'], label='23-Day Volume MA', color='green')  # 更改了這裡
     ax.set_title('均量指標圖')
     ax.legend()
     locator = DayLocator(interval=30)  # 每 30 天顯示一次
     ax.xaxis.set_major_locator(locator)
     ax.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
     fig.autofmt_xdate()  # 自動旋轉日期標籤
+
+    # 修正x軸的標籤以顯示日期
+    ax.set_xticks(data['DateInt'][::30])  # 每30個數據點顯示一次
+    ax.set_xticklabels([pd.to_datetime(date).strftime('%Y-%m-%d') for date in data['Date'][::30]], rotation=45)  # 格式化日期
+
     display_chart(fig)
+
 
 def plot_normal_distribution(data):
     # 繪製常態分佈圖
