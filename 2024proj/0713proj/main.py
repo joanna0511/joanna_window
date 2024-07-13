@@ -11,8 +11,8 @@ class StockApp:
         self.root = root
         self.root.title("股價整合系統")
         
-        plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei']  # 使用微軟正黑體
-        plt.rcParams['axes.unicode_minus'] = False  # 解決座標軸負號顯示問題
+        plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei']
+        plt.rcParams['axes.unicode_minus'] = False
         
         self.stock_dict = {
             "TSMC(ADR)": "TSM",
@@ -20,45 +20,36 @@ class StockApp:
             "NVIDIA": "NVDA",
             "APPLE": "AAPL"
         }
-        # 更新部分：移除圖形選項
-        self.chart_options = ["KD指標圖", "均價指標圖", "均量指標圖", "常態分佈圖", "盒鬚圖", "RSI", "熱力圖"]
-        self.time_options = ["1月", "3月", "6月", "1年", "2年"]  # 添加時間範圍選項
+        
+        self.chart_options = ["KD指標圖", "均價指標圖", "均量指標圖", "RSI", "常態分佈圖", "盒鬚圖", "熱力圖"]
+        self.time_options = ["1月", "3月", "6月", "1年", "2年"]
+        
         self.create_widgets()
-        self.plot_chart(initial=True)  # 調用繪圖功能以預設顯示
+        self.plot_chart(initial=True)
 
     def create_widgets(self):
         stock_label = tk.Label(self.root, text="選擇股票:")
         stock_label.grid(row=0, column=0)
         self.stock_var = tk.StringVar(value="TSMC(ADR)")
-        stock_menu = ttk.Combobox(self.root, textvariable=self.stock_var, values=list(self.stock_dict.keys()))
+        stock_menu = ttk.Combobox(self.root, textvariable=self.stock_var, values=list(self.stock_dict.keys()), state="readonly")
         stock_menu.grid(row=0, column=1)
 
         time_label = tk.Label(self.root, text="選擇時間範圍:")
         time_label.grid(row=1, column=0)
         self.time_var = tk.StringVar(value="1年")
-        time_menu = ttk.Combobox(self.root, textvariable=self.time_var, values=self.time_options)
+        time_menu = ttk.Combobox(self.root, textvariable=self.time_var, values=self.time_options, state="readonly")
         time_menu.grid(row=1, column=1)
-        
+
         chart_label = tk.Label(self.root, text="選擇圖形:")
         chart_label.grid(row=2, column=0)
         self.chart_var = tk.StringVar(value="KD指標圖")
-        chart_menu = ttk.Combobox(self.root, textvariable=self.chart_var, values=self.chart_options)
+        chart_menu = ttk.Combobox(self.root, textvariable=self.chart_var, values=self.chart_options, state="readonly")
         chart_menu.grid(row=2, column=1)
-        
-        plot_button = tk.Button(self.root, text="執行", command=self.plot_chart)
-        plot_button.grid(row=3, column=0, columnspan=2)
 
-    def get_period(self, time_option):
-        if time_option == "1月":
-            return 30
-        elif time_option == "3月":
-            return 90
-        elif time_option == "6月":
-            return 180
-        elif time_option == "1年":
-            return 365
-        elif time_option == "2年":
-            return 730
+        execute_button = tk.Button(self.root, text="執行", command=self.plot_chart)
+        execute_button.grid(row=3, column=1, sticky=tk.W+tk.E)
+
+
 
     def plot_chart(self, initial=False):
         stock = self.stock_var.get() if not initial else "TSMC(ADR)"
@@ -67,27 +58,30 @@ class StockApp:
         ticker = self.stock_dict.get(stock, None)
         if ticker:
             end_date = datetime.now()
-            start_date = end_date - timedelta(days=self.get_period(time_option))  # 根據用戶選擇的時間範圍設置日期
+            start_date = end_date - timedelta(days=self.get_period(time_option))
             try:
                 stock_data = yf.download(ticker, start=start_date, end=end_date)
+                if stock_data.empty:
+                    raise ValueError("Unable to fetch stock data")
+                stock_data = stock_data[stock_data.index.dayofweek < 5]  # Only keep trading days
+                if stock_data.empty:
+                    raise ValueError("No data available for the given dates")
             except Exception as e:
-                messagebox.showerror("錯誤", f"無法獲取股票數據: {e}")
+                messagebox.showerror("Error", f"Unable to fetch stock data: {e}")
                 return
             
-            if chart_type == "KD指標圖":
-                plot_kd_chart(self, stock_data)
-            elif chart_type == "均價指標圖":
-                plot_ma_chart(self, stock_data)
-            elif chart_type == "均量指標圖":
-                plot_volume_chart(self, stock_data)
-            elif chart_type == "常態分佈圖":
-                plot_normal_distribution(self, stock_data)
-            elif chart_type == "盒鬚圖":
-                plot_boxplot(self, stock_data)
-            elif chart_type == "RSI":
-                plot_rsi(self, stock_data)
-            elif chart_type == "熱力圖":
-                plot_heatmap(self, stock_data)
+            chart_funcs = {
+                "KD指標圖": plot_kd_chart,
+                "均價指標圖": plot_ma_chart,
+                "均量指標圖": plot_volume_chart,
+                "RSI": plot_rsi,
+                "常態分佈圖": plot_normal_distribution,
+                "盒鬚圖": plot_boxplot,
+                "熱力圖": plot_heatmap
+            }
+
+            plot_func = chart_funcs.get(chart_type, plot_kd_chart)
+            plot_func(self, stock_data)
 
     def display_chart(self, fig):
         for widget in self.root.grid_slaves(row=0, column=2):
@@ -95,6 +89,10 @@ class StockApp:
         canvas = FigureCanvasTkAgg(fig, master=self.root)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=2, rowspan=6)
+
+    def get_period(self, time_option):
+        time_map = {"1月": 30, "3月": 90, "6月": 180, "1年": 365, "2年": 730}
+        return time_map.get(time_option, 365)
 
 if __name__ == "__main__":
     root = tk.Tk()
