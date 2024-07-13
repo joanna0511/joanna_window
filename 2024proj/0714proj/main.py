@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox
 import yfinance as yf
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
-from plot_methods import plot_kd_chart, plot_ma_chart, plot_volume_chart, plot_normal_distribution, plot_boxplot, plot_rsi, plot_heatmap
+from plot_methods import plot_scatter_chart, plot_regression_chart, plot_price_chart, plot_decision_tree
 from datetime import datetime, timedelta
 
 class StockApp:
@@ -16,16 +16,22 @@ class StockApp:
         
         self.stock_dict = {
             "TSMC(ADR)": "TSM",
-            "TSMC(台股)": "2330.TW",
             "NVIDIA": "NVDA",
-            "APPLE": "AAPL"
+            "APPLE": "AAPL",
+            "TSMC(ADR)xNVIDIA": ["TSM", "NVDA"],
+            "TSMC(ADR)xAPPLE": ["TSM", "AAPL"],
+            "NVIDIAxTSMC(ADR)": ["NVDA", "TSM"],
+            "APPLExTSMC(ADR)": ["AAPL", "TSM"]
         }
         
-        self.chart_options = ["KD指標圖", "均價指標圖", "均量指標圖", "RSI", "常態分佈圖", "盒鬚圖", "熱力圖"]
-        self.time_options = ["1月", "3月", "6月", "1年", "2年"]
+        self.chart_options = ["散佈圖", "迴歸分析圖", "決策樹圖"]
+        self.time_options = ["1年", "3年", "5年"]
         
         self.create_widgets()
         self.plot_chart(initial=True)
+
+        # Add a protocol for handling window close
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def create_widgets(self):
         stock_label = tk.Label(self.root, text="選擇股票:")
@@ -42,7 +48,7 @@ class StockApp:
         
         chart_label = tk.Label(self.root, text="選擇圖形:")
         chart_label.grid(row=2, column=0)
-        self.chart_var = tk.StringVar(value="KD指標圖")
+        self.chart_var = tk.StringVar(value="散佈圖")
         chart_menu = ttk.Combobox(self.root, textvariable=self.chart_var, values=self.chart_options, state="readonly")
         chart_menu.grid(row=2, column=1)
         
@@ -50,37 +56,42 @@ class StockApp:
         plot_button.grid(row=3, column=0, columnspan=2)
 
     def get_period(self, time_option):
-        time_map = {"1月": 30, "3月": 90, "6月": 180, "1年": 365, "2年": 730}
+        time_map = {"1年": 365, "3年": 1095, "5年": 1825}
         return time_map.get(time_option, 365)
 
     def plot_chart(self, initial=False):
         stock = self.stock_var.get() if not initial else "TSMC(ADR)"
-        chart_type = self.chart_var.get() if not initial else "KD指標圖"
+        chart_type = self.chart_var.get() if not initial else "散佈圖"
         time_option = self.time_var.get() if not initial else "1年"
-        ticker = self.stock_dict.get(stock, None)
-        if ticker:
+        
+        tickers = self.stock_dict.get(stock, None)
+        if tickers:
+            if isinstance(tickers, str):
+                tickers = [tickers]
             end_date = datetime.now()
             start_date = end_date - timedelta(days=self.get_period(time_option))
             try:
-                stock_data = yf.download(ticker, start=start_date, end=end_date)
-                if stock_data.empty:
+                stock_data = {ticker: yf.download(ticker, start=start_date, end=end_date) for ticker in tickers}
+                
+                if any(data.empty for data in stock_data.values()):
                     raise ValueError("無數據")
             except Exception as e:
                 messagebox.showerror("錯誤", f"無法獲取股票數據: {e}")
                 return
             
-            chart_funcs = {
-                "KD指標圖": plot_kd_chart,
-                "均價指標圖": plot_ma_chart,
-                "均量指標圖": plot_volume_chart,
-                "RSI": plot_rsi,
-                "常態分佈圖": plot_normal_distribution,
-                "盒鬚圖": plot_boxplot,
-                "熱力圖": plot_heatmap
-            }
+            if isinstance(tickers, list) and len(tickers) == 2:
+                chart_funcs = {
+                    "散佈圖": plot_scatter_chart,
+                    "迴歸分析圖": plot_regression_chart,
+                    "決策樹圖": plot_decision_tree
+                }
 
-            plot_func = chart_funcs.get(chart_type, plot_kd_chart)
-            plot_func(self, stock_data)
+                plot_func = chart_funcs.get(chart_type, plot_scatter_chart)
+                plot_func(self, stock_data, tickers)
+            else:
+                plot_price_chart(self, stock_data, tickers)
+        else:
+            messagebox.showerror("錯誤", "無效的股票選擇")
 
     def display_chart(self, fig):
         for widget in self.root.grid_slaves(row=0, column=2):
@@ -88,6 +99,9 @@ class StockApp:
         canvas = FigureCanvasTkAgg(fig, master=self.root)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=2, rowspan=6)
+
+    def on_closing(self):
+        self.root.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()
