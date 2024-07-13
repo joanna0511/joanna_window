@@ -1,2 +1,4 @@
 statsmodels.api
 seaborn
+pandas
+matplotlib.pyplot
