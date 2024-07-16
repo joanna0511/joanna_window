@@ -1,6 +1,6 @@
 ## 股價指標圖形整合系統
 ![first](./img/First.PNG)
-![total](./img/total9.png)
+![total](./img/total9.PNG)
 ### 一、專案組名：股價指標圖形整合系統
 ### 二、專案組員：周筱蘭
 ### 三、專案說明：
