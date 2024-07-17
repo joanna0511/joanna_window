@@ -1,4 +1,5 @@
 # 股價指標圖形整合系統
+## 啟始畫面
 ![first](./img/First.PNG)
 ## 圖形種類
 ![total](./img/total9.PNG)
