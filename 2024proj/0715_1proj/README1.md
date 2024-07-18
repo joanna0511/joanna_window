@@ -5,9 +5,7 @@
 ![total](./img/total9.PNG)
 ## 一、專案組名：股價指標圖形整合系統
 ## 二、專案組員：周筱蘭
-## 三、專案網址：
-   * https://github.com/joanna0511/joanna_window/tree/main/Homework/issue264
-## 四、專案說明：
+## 三、專案說明：
 _______
 ## 股價整合系統
 

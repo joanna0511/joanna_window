@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 class StockApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("股價指標圖形整合系統")
+        self.root.title("股價整合系統")
 
         plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei']
         plt.rcParams['axes.unicode_minus'] = False
@@ -37,7 +37,7 @@ class StockApp:
         self.single_chart_options = ["KD指標圖", "均價指標圖", "RSI", "常態分佈圖", "盒鬚圖", "熱力圖"]
         self.multi_chart_options = ["散佈圖", "迴歸分析圖", "決策樹圖"]
 
-        self.time_options = ["1佪月", "3個月", "6個月", "1年", "2年"]
+        self.time_options = ["1月", "3月", "6月", "1年", "2年"]
         self.multi_time_options = ["1年", "3年", "5年"]
 
         self.create_widgets()
@@ -95,7 +95,7 @@ class StockApp:
         multi_plot_button.grid(row=7, column=0, columnspan=2)
 
     def get_period(self, time_option):
-        time_map = {"1個月": 30, "3個月": 90, "6個月": 180, "1年": 365, "2年": 730}
+        time_map = {"1月": 30, "3月": 90, "6月": 180, "1年": 365, "2年": 730}
         return time_map.get(time_option, 365)
 
     def get_multi_period(self, time_option):

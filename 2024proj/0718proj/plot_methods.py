@@ -112,7 +112,7 @@ def plot_decision_tree(self, stock_data, tickers):
     x = data[tickers[0]].values.reshape(-1, 1)
     y = data['Target'].values
 
-    # 使用決策樹分類器來擬合數據資料
+    # 使用決策樹分類器來擬合數據
     clf = DecisionTreeClassifier(max_depth=3).fit(x, y)
     
     fig, ax = plt.subplots(figsize=(12, 8))
