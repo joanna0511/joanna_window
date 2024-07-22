@@ -1,14 +1,24 @@
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
 
-# 讀取台積電的股價資料
-file_path = './tsmcadr10y.csv'  # 替換為你的檔案路徑
-tsmc_data = pd.read_csv(file_path)
+# Load TSMC's (2330.TW) stock data
+data = pd.read_csv('/mnt/data/tsmc_3_years_close.csv')  # Assuming the file is already available
 
-# 去掉 '調整後收盤價 (Adj Close)' 欄位
-tsmc_data_modified = tsmc_data.drop(columns=['Adj Close'])
+# Calculate Z-scores
+data['Z-score'] = (data['Close'] - data['Close'].mean()) / data['Close'].std()
 
-# 另存成 tsmcadr10y-1.csv
-new_file_path = './tsmcadr10y-1.csv'  # 替換為你要儲存檔案的路徑
-tsmc_data_modified.to_csv(new_file_path, index=False)
-
-print(f"已將修改後的資料儲存成 {new_file_path}")
+# Plot the probability density function of Z-scores
+plt.figure(figsize=(10, 6))
+sns.histplot(data['Z-score'], kde=True, stat="density", linewidth=0)
+xmin, xmax = plt.xlim()
+x = np.linspace(xmin, xmax, 100)
+p = norm.pdf(x, 0, 1)
+plt.plot(x, p, 'k', linewidth=2)
+title = "Probability Density Function of TSMC (2330.TW) Z-scores (3 years)"
+plt.title(title)
+plt.xlabel('Z-score')
+plt.ylabel('Density')
+plt.grid(True)
+plt.show()
