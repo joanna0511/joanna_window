@@ -1,10 +1,12 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from scipy.stats import norm
 
 # Load TSMC's (2330.TW) stock data
-data = pd.read_csv('/mnt/data/tsmc_3_years_close.csv')  # Assuming the file is already available
+file_path = '/mnt/data/ts2330_5y.csv'
+data = pd.read_csv(file_path)
 
 # Calculate Z-scores
 data['Z-score'] = (data['Close'] - data['Close'].mean()) / data['Close'].std()
@@ -16,7 +18,7 @@ xmin, xmax = plt.xlim()
 x = np.linspace(xmin, xmax, 100)
 p = norm.pdf(x, 0, 1)
 plt.plot(x, p, 'k', linewidth=2)
-title = "Probability Density Function of TSMC (2330.TW) Z-scores (3 years)"
+title = "Probability Density Function of TSMC (2330.TW) Z-scores (5 years)"
 plt.title(title)
 plt.xlabel('Z-score')
 plt.ylabel('Density')
