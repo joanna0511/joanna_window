@@ -1,24 +1,13 @@
-import pandas as pd
-from sklearn.tree import DecisionTreeRegressor, plot_tree
-import matplotlib.pyplot as plt
+# Remove the Volume column from TSMC dataframe
+tsmc_df = tsmc_df.drop(columns=['Volume'])
 
-# 加載數據
-nvidia_df = pd.read_csv('nvidia10y-2_novolum.csv')
-tsmc_df = pd.read_csv('tsmcadr10y-2_novolum.csv')
+# Calculate the 20-day and 50-day moving averages for TSMC dataframe
+tsmc_df['20MA'] = tsmc_df['Close'].rolling(window=20).mean()
+tsmc_df['50MA'] = tsmc_df['Close'].rolling(window=60).mean()
 
-# 合併數據
-merged_df = pd.merge(nvidia_df, tsmc_df, on='Date', suffixes=('_nvidia', '_tsmc'))
+# Save the modified TSMC dataframe to a new CSV file
+tsmc_df.to_csv('/mnt/data/tsmcadr10y-2.csv', index=False)
 
-# 準備數據
-features = merged_df[['Open_nvidia', 'High_nvidia', 'Low_nvidia', 'Close_nvidia', '20MA_nvidia', '50MA_nvidia']].dropna()
-labels = merged_df.loc[features.index, 'Close_tsmc']
+import ace_tools as tools; tools.display_dataframe_to_user(name="Modified TSMC ADR Data", dataframe=tsmc_df)
 
-# 訓練決策樹回歸模型
-tree_model = DecisionTreeRegressor(max_depth=5)
-tree_model.fit(features, labels)
-
-# 繪製決策樹
-plt.figure(figsize=(20, 10))
-plot_tree(tree_model, feature_names=features.columns, filled=True, rounded=True, fontsize=10)
-plt.title('Decision Tree for TSMC Closing Price Prediction based on NVIDIA Data')
-plt.show()
+tsmc_df.head(25)
