@@ -1,7 +1,6 @@
 import matplotlib
 matplotlib.use('Agg')
 
-
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates  # 確保導入 mdates
 from matplotlib import font_manager
@@ -14,13 +13,16 @@ from sklearn.tree import DecisionTreeClassifier, plot_tree
 
 def plot_kd_chart(data):
     data = data.dropna(subset=['Close'])
-
+    
     low_min = data['Low'].rolling(window=9).min()
     high_max = data['High'].rolling(window=9).max()
     data['K'] = (data['Close'] - low_min) / (high_max - low_min) * 100
     data['D'] = data['K'].rolling(window=3).mean()
     
-    fig, ax = plt.subplots(figsize=(8, 4))
+    # 使用重新索引確保只顯示有數據的日期
+    data = data.dropna().reindex(data.index.dropna())
+    
+    fig, ax = plt.subplots(figsize=(10, 5))
     ax.plot(data.index, data['K'], label='K')
     ax.plot(data.index, data['D'], label='D')
     ax.axhline(50, color='gray', linestyle='--', linewidth=1, label='K=50')
@@ -28,15 +30,18 @@ def plot_kd_chart(data):
     ax.legend()
 
     # 設置 X 軸只顯示有數據的日期，且日期均勻分佈
-    ax.xaxis.set_major_locator(mdates.AutoDateLocator())  # 自動調整標籤顯示間隔
+    ax.set_xticks(data.index)
+    ax.xaxis.set_major_locator(mdates.AutoDateLocator())  # 自動選擇最佳的日期間隔
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))  # 設置日期格式
     fig.autofmt_xdate()  # 自動調整日期標籤角度以防止重疊
 
-    return fig  # 確保返回 figure 對象
+    return fig
 
 def plot_ma_chart(data):
+    data = data.dropna(subset=['Close'])
     data['MA20'] = data['Close'].rolling(window=20).mean()
     data['MA50'] = data['Close'].rolling(window=50).mean()
+
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.plot(data.index, data['Close'], label='Close Price')
     ax.plot(data.index, data['MA20'], label='20-Day MA')
@@ -44,6 +49,24 @@ def plot_ma_chart(data):
     ax.set_title('均價指標圖')
     ax.legend()
     return fig  # 確保返回 figure 對象
+
+def plot_rsi(data):
+    delta = data['Close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / loss
+    data['RSI'] = 100 - (100 / (1 + rs))
+    
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(data.index, data['RSI'], label='RSI')
+    ax.axhline(70, color='r', linestyle='--')
+    ax.axhline(30, color='g', linestyle='--')
+    ax.set_title('相對強弱指數（RSI）')
+    ax.legend()
+    return fig
+
+
+
 
 def plot_normal_distribution(data):
     returns = data['Close'].pct_change().dropna()
@@ -55,38 +78,25 @@ def plot_normal_distribution(data):
     ax.set_title('常態分佈圖')
     return fig  # 確保返回 figure 對象
 
-def plot_boxplot(self, data):
+def plot_boxplot(data):
     returns = data['Close'].pct_change().dropna()
-    fig, ax = plt.subplots(figsize=(8, 4))
+    fig, ax = plt.subplots(figsize=(10, 5))
     ax.boxplot(returns, vert=False)
     ax.set_title('盒鬚圖')
     ax.set_xlabel('日回報率')
-    self.display_chart(fig)
+    return fig
 
-def plot_rsi(self, data):
-    delta = data['Close'].diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-    rs = gain / loss
-    data['RSI'] = 100 - (100 / (1 + rs))
-    
-    fig, ax = plt.subplots(figsize=(8, 4))
-    ax.plot(data.index, data['RSI'], label='RSI')
-    ax.axhline(70, color='r', linestyle='--')
-    ax.axhline(30, color='g', linestyle='--')
-    ax.set_title('相對強弱指數（RSI）')
-    ax.legend()
-    self.display_chart(fig)
 
-def plot_heatmap(self, data):
+
+def plot_heatmap(data):
     data['Year'] = data.index.year
     data['Month'] = data.index.month
     pivot_table = data.pivot_table(values='Close', index='Month', columns='Year', aggfunc='mean')
     
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(10, 5))
     sns.heatmap(pivot_table, annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
     ax.set_title('股價熱力圖')
-    self.display_chart(fig)
+    return fig
 
 def plot_scatter_chart(self, stock_data, tickers):
     fig, ax = plt.subplots(figsize=(8, 4))

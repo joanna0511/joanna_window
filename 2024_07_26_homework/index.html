@@ -9,12 +9,20 @@
     <h1>Stock Chart API</h1>
     <form id="chart-form">
         <label for="stock">Stock:</label>
-        <input type="text" id="stock" name="stock" value="TSM"><br>
+        <select id="stock" name="stock">
+            <option value="2330.TW">TSMC (台股)</option>
+            <option value="TSM">TSMC (ADR)</option>
+            <option value="NVDA">NVIDIA (NVDA)</option>
+            <option value="AAPL">Apple (AAPL)</option>
+        </select><br>
         <label for="chartType">Chart Type:</label>
         <select id="chartType" name="chartType">
             <option value="KD">KD指標圖</option>
             <option value="MA">均價指標圖</option>
-            <!-- Add more options as needed -->
+            <option value="RSI">RSI</option>
+            <option value="Normal Distribution">常態分佈圖</option>
+            <option value="Boxplot">盒鬚圖</option>
+            <option value="Heatmap">股價熱力圖</option>
         </select><br>
         <label for="startDate">Start Date:</label>
         <input type="date" id="startDate" name="startDate"><br>

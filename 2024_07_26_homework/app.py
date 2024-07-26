@@ -1,9 +1,11 @@
-from flask import Flask, request, jsonify, send_from_directory
-import yfinance as yf
+
 
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from flask import Flask, request, jsonify, send_from_directory
+import yfinance as yf
+
 from matplotlib import font_manager
 
 font_path = 'C:/Windows/Fonts/msjh.ttc'  # Windows 上的字體路徑
@@ -36,13 +38,24 @@ def plot():
         end_date = data['endDate']
         
         stock_data = yf.download(stock, start=start_date, end=end_date)
-        print("Downloaded stock data:", stock_data.head())
+        #print("Downloaded stock data:", stock_data.head())
         
         fig = None
         if chart_type == 'KD':
             fig = plot_kd_chart(stock_data)
         elif chart_type == 'MA':
             fig = plot_ma_chart(stock_data)
+
+        elif chart_type == 'RSI':
+            fig = plot_rsi(stock_data)
+        elif chart_type == 'Normal Distribution':
+            fig = plot_normal_distribution(stock_data)
+        elif chart_type == 'Boxplot':
+            fig = plot_boxplot(stock_data)
+        elif chart_type == 'Heatmap':
+            fig = plot_heatmap(stock_data)
+
+
         # 添加其他圖表類型的處理
         else:
             return jsonify({'error': 'Unknown chart type'}), 400
