@@ -98,35 +98,35 @@ def plot_heatmap(data):
     ax.set_title('股價熱力圖')
     return fig
 
-def plot_scatter_chart(self, stock_data, tickers):
-    fig, ax = plt.subplots(figsize=(8, 4))
+def plot_scatter_chart(stock_data, tickers):
+    fig, ax = plt.subplots(figsize=(10, 5))
     ax.scatter(stock_data[tickers[0]]['Close'], stock_data[tickers[1]]['Close'])
     ax.set_xlabel(f'{tickers[0]} Close Price')
     ax.set_ylabel(f'{tickers[1]} Close Price')
     ax.set_title('散佈圖')
-    self.display_chart(fig)
+    return fig
 
-def plot_regression_chart(self, stock_data, tickers):
+def plot_regression_chart(stock_data, tickers):
     from sklearn.linear_model import LinearRegression
     model = LinearRegression()
     x = stock_data[tickers[0]]['Close'].values.reshape(-1, 1)
     y = stock_data[tickers[1]]['Close'].values
     model.fit(x, y)
-    fig, ax = plt.subplots(figsize=(8, 4))
+    fig, ax = plt.subplots(figsize=(10, 5))
     ax.scatter(x, y, color='blue')
     ax.plot(x, model.predict(x), color='red')
     ax.set_xlabel(f'{tickers[0]} Close Price')
     ax.set_ylabel(f'{tickers[1]} Close Price')
     ax.set_title('迴歸分析圖')
-    self.display_chart(fig)
+    return fig
 
-def plot_price_chart(self, stock_data, tickers):
-    fig, ax = plt.subplots(figsize=(8, 4))
+def plot_price_chart(stock_data, tickers):
+    fig, ax = plt.subplots(figsize=(10, 5))
     for ticker in tickers:
         ax.plot(stock_data[ticker].index, stock_data[ticker]['Close'], label=ticker)
-    ax.set_title('股價圖')
+    ax.set_title('多股票價格圖')
     ax.legend()
-    self.display_chart(fig)
+    return fig
 
 def plot_decision_tree(self, stock_data, tickers):
     data = pd.DataFrame({
