@@ -1,4 +1,11 @@
+import matplotlib
+matplotlib.use('Agg')
+
+
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates  # 確保導入 mdates
+from matplotlib import font_manager
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -6,6 +13,8 @@ from matplotlib.dates import DateFormatter, DayLocator
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 
 def plot_kd_chart(data):
+    data = data.dropna(subset=['Close'])
+
     low_min = data['Low'].rolling(window=9).min()
     high_max = data['High'].rolling(window=9).max()
     data['K'] = (data['Close'] - low_min) / (high_max - low_min) * 100
@@ -17,6 +26,12 @@ def plot_kd_chart(data):
     ax.axhline(50, color='gray', linestyle='--', linewidth=1, label='K=50')
     ax.set_title('KD指標圖')
     ax.legend()
+
+    # 設置 X 軸只顯示有數據的日期，且日期均勻分佈
+    ax.xaxis.set_major_locator(mdates.AutoDateLocator())  # 自動調整標籤顯示間隔
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))  # 設置日期格式
+    fig.autofmt_xdate()  # 自動調整日期標籤角度以防止重疊
+
     return fig  # 確保返回 figure 對象
 
 def plot_ma_chart(data):
@@ -30,7 +45,7 @@ def plot_ma_chart(data):
     ax.legend()
     return fig  # 確保返回 figure 對象
 
-def plot_normal_distribution(self, data):
+def plot_normal_distribution(data):
     returns = data['Close'].pct_change().dropna()
     mu = returns.mean()
     sigma = returns.std()
@@ -38,7 +53,7 @@ def plot_normal_distribution(self, data):
     count, bins, ignored = ax.hist(returns, bins=30, density=True, alpha=0.6, color='g')
     ax.plot(bins, 1/(sigma * np.sqrt(2 * np.pi)) * np.exp( - (bins - mu)**2 / (2 * sigma**2) ), linewidth=2, color='r')
     ax.set_title('常態分佈圖')
-    self.display_chart(fig)
+    return fig  # 確保返回 figure 對象
 
 def plot_boxplot(self, data):
     returns = data['Close'].pct_change().dropna()

@@ -1,6 +1,16 @@
 from flask import Flask, request, jsonify, send_from_directory
 import yfinance as yf
+
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib import font_manager
+
+font_path = 'C:/Windows/Fonts/msjh.ttc'  # Windows 上的字體路徑
+font_manager.fontManager.addfont(font_path)
+matplotlib.rcParams['font.family'] = 'Microsoft JhengHei'
+
+
 from io import BytesIO
 import base64
 from plot_methods import (
@@ -19,14 +29,14 @@ def index():
 def plot():
     try:
         data = request.json
-        print("Received data:", data)
+        ##print("Received data:", data)
         stock = data['stock']
         chart_type = data['chartType']
         start_date = data['startDate']
         end_date = data['endDate']
         
         stock_data = yf.download(stock, start=start_date, end=end_date)
-        ##print("Downloaded stock data:", stock_data.head())
+        print("Downloaded stock data:", stock_data.head())
         
         fig = None
         if chart_type == 'KD':
