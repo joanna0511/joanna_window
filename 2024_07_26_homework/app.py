@@ -1,33 +1,35 @@
-
-
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
+# 設定中文字體
+plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei']
+plt.rcParams['axes.unicode_minus'] = False
+
 from flask import Flask, request, jsonify, send_from_directory
 import yfinance as yf
-
-from matplotlib import font_manager
-
-font_path = 'C:/Windows/Fonts/msjh.ttc'  # Windows 上的字體路徑
-font_manager.fontManager.addfont(font_path)
-matplotlib.rcParams['font.family'] = 'Microsoft JhengHei'
-
-
-from io import BytesIO
-import base64
 from plot_methods import (
-    plot_kd_chart, plot_ma_chart, plot_rsi, plot_normal_distribution,
+    plot_kd_chart, plot_ma_chart, plot_rsi, plot_normal_distribution, 
     plot_boxplot, plot_heatmap, plot_scatter_chart, plot_regression_chart, plot_price_chart, plot_decision_tree
 )
+import base64
+from io import BytesIO
 
-# 創建 Flask 應用實例
 app = Flask(__name__, static_url_path='', static_folder='.')
 
 @app.route('/')
 def index():
-    return send_from_directory('.', 'index.html')
+    return send_from_directory('.', 'index_integrate.html')
 
-@app.route('/api/plot', methods=['POST'])
+@app.route('/single')
+def single():
+    return send_from_directory('.', 'index1.html')
+
+@app.route('/multi')
+def multi():
+    return send_from_directory('.', 'index2.html')
+
+@app.route('/api/single_plot', methods=['POST'])
 def single_plot():
     try:
         data = request.json
@@ -91,6 +93,11 @@ def multi_plot():
                 return jsonify({'error': '迴歸分析圖需要選擇兩個股票'}), 400
         elif chart_type == 'Multi-Price':
             fig = plot_price_chart(stock_data, tickers)
+        elif chart_type == 'Decision Tree':
+            if len(tickers) == 2:
+                fig = plot_decision_tree(stock_data, tickers)
+            else:
+                return jsonify({'error': '決策樹圖需要選擇兩個股票'}), 400
         else:
             return jsonify({'error': 'Unknown chart type'}), 400
         
@@ -106,12 +113,6 @@ def multi_plot():
     except Exception as e:
         print("Error occurred:", e)
         return jsonify({'error': str(e)}), 500
-    
-
-    
-@app.errorhandler(404)
-def page_not_found(e):
-    return "Page not found. Please check the URL.", 404
 
 if __name__ == '__main__':
     app.run(debug=True)
