@@ -9,11 +9,11 @@
     <h1>Multi Stock Chart API</h1>
     <form id="multi-stock-form">
         <label for="multi-tickers">Stocks:</label>
-        <select id="multi-tickers" name="multi-tickers" multiple>
-            <option value="2330.TW">TSMC (台股)</option>
-            <option value="TSM">TSMC (ADR)</option>
-            <option value="NVDA">NVIDIA (NVDA)</option>
-            <option value="AAPL">Apple (AAPL)</option>
+        <select id="multi-tickers" name="multi-tickers">
+            <option value="TSM_NVDA">TSMC(ADR)xNVIDIA</option>
+            <option value="TSM_AAPL">TSMC(ADR)xAPPLE</option>
+            <option value="NVDA_TSM">NVIDIAxTSMC(ADR)</option>
+            <option value="AAPL_TSM">APPLExTSMC(ADR)</option>
         </select><br>
         <label for="multiChartType">Chart Type:</label>
         <select id="multiChartType" name="multiChartType">
@@ -33,15 +33,28 @@
     <script>
         document.getElementById('multi-stock-form').addEventListener('submit', function (event) {
             event.preventDefault();
-            var tickers = Array.from(document.getElementById('multi-tickers').selectedOptions).map(option => option.value);
+            var selectedValue = document.getElementById('multi-tickers').value;
+            var tickers;
+            switch (selectedValue) {
+                case "TSM_NVDA":
+                    tickers = ["TSM", "NVDA"];
+                    break;
+                case "TSM_AAPL":
+                    tickers = ["TSM", "AAPL"];
+                    break;
+                case "NVDA_TSM":
+                    tickers = ["NVDA", "TSM"];
+                    break;
+                case "AAPL_TSM":
+                    tickers = ["AAPL", "TSM"];
+                    break;
+                default:
+                    alert('請選擇一個有效的股票組合');
+                    return;
+            }
             var chartType = document.getElementById('multiChartType').value;
             var startDate = document.getElementById('multiStartDate').value;
             var endDate = document.getElementById('multiEndDate').value;
-
-            if (tickers.length === 0) {
-                alert('請至少選擇一個股票');
-                return;
-            }
 
             fetch('/api/multi_plot', {
                 method: 'POST',
