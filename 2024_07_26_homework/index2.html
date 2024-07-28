@@ -3,36 +3,47 @@
 
 <head>
     <title>Multi Stock Chart API</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 
 <body>
     <h1>Multi Stock Chart API</h1>
-    <form id="multi-stock-form">
-        <label for="multi-tickers">Stocks:</label>
-        <select id="multi-tickers" name="multi-tickers">
-            <option value="TSM_NVDA">TSMC(ADR)xNVIDIA</option>
-            <option value="TSM_AAPL">TSMC(ADR)xAPPLE</option>
-            <option value="NVDA_TSM">NVIDIAxTSMC(ADR)</option>
-            <option value="AAPL_TSM">APPLExTSMC(ADR)</option>
-        </select><br>
-        <label for="multiChartType">Chart Type:</label>
-        <select id="multiChartType" name="multiChartType">
-            <option value="Scatter">散佈圖</option>
-            <option value="Regression">迴歸分析圖</option>
-            <option value="Multi-Price">多股票價格圖</option>
-            <option value="Decision Tree">決策樹圖</option>
-        </select><br>
-        <label for="multiStartDate">Start Date:</label>
-        <input type="date" id="multiStartDate" name="multiStartDate"><br>
-        <label for="multiEndDate">End Date:</label>
-        <input type="date" id="multiEndDate" name="multiEndDate"><br>
-        <button type="submit">Get Multi-Stock Chart</button>
-    </form>
-    <img id="multi-chart" src="" alt="Chart will appear here">
-
+    <div class="container">
+        <div class="menu">
+            <form id="multi-stock-form">
+                <label for="multi-tickers">Stocks:</label>
+                <select id="multi-tickers" name="multi-tickers">
+                    <option value="TSM_NVDA">TSMC(ADR)xNVIDIA</option>
+                    <option value="TSM_AAPL">TSMC(ADR)xAPPLE</option>
+                    <option value="NVDA_TSM">NVIDIAxTSMC(ADR)</option>
+                    <option value="AAPL_TSM">APPLExTSMC(ADR)</option>
+                </select><br>
+                <label for="multiChartType">Chart Type:</label>
+                <select id="multiChartType" name="multiChartType">
+                    <option value="Scatter">散佈圖</option>
+                    <option value="Regression">迴歸分析圖</option>
+                    <option value="Multi-Price">多股票價格圖</option>
+                    <option value="Decision Tree">決策樹圖</option>
+                </select><br>
+                <label for="multiStartDate">Start Date:</label>
+                <input type="date" id="multiStartDate" name="multiStartDate"><br>
+                <label for="multiEndDate">End Date:</label>
+                <input type="date" id="multiEndDate" name="multiEndDate"><br>
+                <button type="submit">Get Multi-Stock Chart</button>
+            </form>
+        </div>
+        <div class="chart">
+            <img id="multi-chart" src="" alt="Chart will appear here">
+        </div>
+    </div>
     <script>
-        document.getElementById('multi-stock-form').addEventListener('submit', function (event) {
-            event.preventDefault();
+        // 預設值
+        document.getElementById('multi-tickers').value = 'TSM_NVDA';
+        document.getElementById('multiChartType').value = 'Regression';
+        document.getElementById('multiStartDate').value = '2022-07-01';
+        document.getElementById('multiEndDate').value = '2024-07-26';
+
+        function fetchMultiChart() {
             var selectedValue = document.getElementById('multi-tickers').value;
             var tickers;
             switch (selectedValue) {
@@ -71,6 +82,14 @@
                         alert('Error: ' + data.error);
                     }
                 });
+        }
+
+        // 頁面加載時自動獲取預設圖表
+        window.onload = fetchMultiChart;
+
+        document.getElementById('multi-stock-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            fetchMultiChart();
         });
     </script>
 </body>

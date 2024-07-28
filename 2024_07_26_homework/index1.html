@@ -3,38 +3,49 @@
 
 <head>
     <title>Single Stock Chart API</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 
 <body>
     <h1>Single Stock Chart API</h1>
-    <form id="single-stock-form">
-        <label for="stock">Stock:</label>
-        <select id="stock" name="stock">
-            <option value="2330.TW">TSMC (台股)</option>
-            <option value="TSM">TSMC (ADR)</option>
-            <option value="NVDA">NVIDIA (NVDA)</option>
-            <option value="AAPL">Apple (AAPL)</option>
-        </select><br>
-        <label for="chartType">Chart Type:</label>
-        <select id="chartType" name="chartType">
-            <option value="KD">KD指標圖</option>
-            <option value="MA">均價指標圖</option>
-            <option value="RSI">RSI</option>
-            <option value="Normal Distribution">常態分佈圖</option>
-            <option value="Boxplot">盒鬚圖</option>
-            <option value="Heatmap">股價熱力圖</option>
-        </select><br>
-        <label for="startDate">Start Date:</label>
-        <input type="date" id="startDate" name="startDate"><br>
-        <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" name="endDate"><br>
-        <button type="submit">Get Chart</button>
-    </form>
-    <img id="single-chart" src="" alt="Chart will appear here">
-
+    <div class="container">
+        <div class="menu">
+            <form id="single-stock-form">
+                <label for="stock">Stock:</label>
+                <select id="stock" name="stock">
+                    <option value="2330.TW">TSMC (台股)</option>
+                    <option value="TSM">TSMC (ADR)</option>
+                    <option value="NVDA">NVIDIA (NVDA)</option>
+                    <option value="AAPL">Apple (AAPL)</option>
+                </select><br>
+                <label for="chartType">Chart Type:</label>
+                <select id="chartType" name="chartType">
+                    <option value="KD">KD指標圖</option>
+                    <option value="MA">均價指標圖</option>
+                    <option value="RSI">RSI</option>
+                    <option value="Normal Distribution">常態分佈圖</option>
+                    <option value="Boxplot">盒鬚圖</option>
+                    <option value="Heatmap">股價熱力圖</option>
+                </select><br>
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" name="startDate"><br>
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" name="endDate"><br>
+                <button type="submit">Get Chart</button>
+            </form>
+        </div>
+        <div class="chart">
+            <img id="single-chart" src="" alt="Chart will appear here">
+        </div>
+    </div>
     <script>
-        document.getElementById('single-stock-form').addEventListener('submit', function (event) {
-            event.preventDefault();
+        // 預設值
+        document.getElementById('stock').value = '2330.TW';
+        document.getElementById('chartType').value = 'MA';
+        document.getElementById('startDate').value = '2024-04-01';
+        document.getElementById('endDate').value = '2024-07-26';
+
+        function fetchChart() {
             var stock = document.getElementById('stock').value;
             var chartType = document.getElementById('chartType').value;
             var startDate = document.getElementById('startDate').value;
@@ -55,6 +66,14 @@
                         alert('Error: ' + data.error);
                     }
                 });
+        }
+
+        // 頁面加載時自動獲取預設圖表
+        window.onload = fetchChart;
+
+        document.getElementById('single-stock-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            fetchChart();
         });
     </script>
 </body>
