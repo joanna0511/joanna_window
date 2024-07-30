@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Stock Chart API</title>
+</head>
+
+<body>
+    <h1>Single Stock Chart API</h1>
+    <form id="single-stock-form">
+        <label for="stock">Stock:</label>
+        <select id="stock" name="stock">
+            <option value="2330.TW">TSMC (台股)</option>
+            <option value="TSM">TSMC (ADR)</option>
+            <option value="NVDA">NVIDIA (NVDA)</option>
+            <option value="AAPL">Apple (AAPL)</option>
+        </select><br>
+        <label for="chartType">Chart Type:</label>
+        <select id="chartType" name="chartType">
+            <option value="KD">KD指標圖</option>
+            <option value="MA">均價指標圖</option>
+            <option value="RSI">RSI</option>
+            <option value="Normal Distribution">常態分佈圖</option>
+            <option value="Boxplot">盒鬚圖</option>
+            <option value="Heatmap">股價熱力圖</option>
+        </select><br>
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate"><br>
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate"><br>
+        <button type="submit">Get Chart</button>
+    </form>
+    <img id="single-chart" src="" alt="Chart will appear here">
+
+    <h1>Multi Stock Chart API</h1>
+    <form id="multi-stock-form">
+        <label for="multi-tickers">Stocks:</label>
+        <select id="multi-tickers" name="multi-tickers" multiple>
+            <option value="2330.TW">TSMC (台股)</option>
+            <option value="TSM">TSMC (ADR)</option>
+            <option value="NVDA">NVIDIA (NVDA)</option>
+            <option value="AAPL">Apple (AAPL)</option>
+        </select><br>
+        <label for="multiChartType">Chart Type:</label>
+        <select id="multiChartType" name="multiChartType">
+            <option value="Scatter">散佈圖</option>
+            <option value="Regression">迴歸分析圖</option>
+            <option value="Multi-Price">多股票價格圖</option>
+            <option value="Decision Tree">決策樹圖</option>
+        </select><br>
+        <label for="multiStartDate">Start Date:</label>
+        <input type="date" id="multiStartDate" name="multiStartDate"><br>
+        <label for="multiEndDate">End Date:</label>
+        <input type="date" id="multiEndDate" name="multiEndDate"><br>
+        <button type="submit">Get Multi-Stock Chart</button>
+    </form>
+    <img id="multi-chart" src="" alt="Chart will appear here">
+
+    <script>
+        
+        document.getElementById('single-stock-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var stock = document.getElementById('stock').value;
+            var chartType = document.getElementById('chartType').value;
+            var startDate = document.getElementById('startDate').value;
+            var endDate = document.getElementById('endDate').value;
+
+            fetch('/api/single_plot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ stock: stock, chartType: chartType, startDate: startDate, endDate: endDate })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.image) {
+                        document.getElementById('single-chart').src = 'data:image/png;base64,' + data.image;
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                });
+        });
+
+        // 多股票表單
+        document.getElementById('multi-stock-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var tickers = Array.from(document.getElementById('multi-tickers').selectedOptions).map(option => option.value);
+            var chartType = document.getElementById('multiChartType').value;
+            var startDate = document.getElementById('multiStartDate').value;
+            var endDate = document.getElementById('multiEndDate').value;
+
+            fetch('/api/multi_plot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ tickers: tickers, chartType: chartType, startDate: startDate, endDate: endDate })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.image) {
+                        document.getElementById('multi-chart').src = 'data:image/png;base64,' + data.image;
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                });
+        });
+    </script>
+</body>
+
+</html>
