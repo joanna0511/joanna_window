@@ -33,6 +33,9 @@ def index1():
     return render_template('index1.html.jinja',areas=areas,show_area=selected_area,detail_snaes=detail_snaes)    
 
     
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('error.html.jinja'),404
 
 
 if __name__ == "__main__":
