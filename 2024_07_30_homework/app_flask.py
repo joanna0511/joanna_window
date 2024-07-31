@@ -1,20 +1,181 @@
+from dash import Dash, html, dcc
 from flask import Flask, request, jsonify
+from dash import Dash
+import dash_bootstrap_components as dbc
+import dash.dependencies as dd
 
-app = Flask(__name__)
+# 創建 Flask 服務器
+server = Flask(__name__)
 
-@app.route('/')
-def home():
-    return "Welcome to the Flask App!"
-
-@app.route('/api/single_plot', methods=['POST'])
+@server.route('/api/single_plot', methods=['POST'])
 def single_plot():
     data = request.json
-    return jsonify({"message": "成功接收到數據", "data": data})
+    # 處理數據並生成圖表邏輯
+    # 這裡示例返回一個假的 Base64 圖像字符串
+    base64_image = "base64encodedimagestring" 
+    return jsonify({"image": base64_image})
 
-@app.route('/api/multi_plot', methods=['POST'])
+@server.route('/api/multi_plot', methods=['POST'])
 def multi_plot():
     data = request.json
-    return jsonify({"message": "成功接收到數據", "data": data})
+    # 處理多股票數據並生成圖表邏輯
+    base64_image = "base64encodedimagestring"
+    return jsonify({"image": base64_image})
 
+def create_dash_app(server):
+    app = Dash(__name__, server=server, external_stylesheets=[dbc.themes.BOOTSTRAP])
+    
+    app.layout = html.Div([
+        dcc.Location(id='url', refresh=False),
+        html.Div(id='page-content')
+    ])
+
+    index_page = html.Div([
+        html.H1('股價指標圖形整合系統', style={'textAlign': 'center'}),
+        html.Div([
+            dcc.Link('Single Stock Analysis', href='/single', style={'display': 'block', 'margin': '20px auto', 'textAlign': 'center'}),
+            dcc.Link('Multi Stock Analysis', href='/multi', style={'display': 'block', 'margin': '20px auto', 'textAlign': 'center'})
+        ], style={'textAlign': 'center'})
+    ])
+
+    single_page = html.Div([
+        html.H1('Single Stock Chart API'),
+        dcc.Dropdown(
+            id='stock-dropdown',
+            options=[
+                {'label': 'TSMC (台股)', 'value': '2330.TW'},
+                {'label': 'TSMC (ADR)', 'value': 'TSM'},
+                {'label': 'NVIDIA (NVDA)', 'value': 'NVDA'},
+                {'label': 'Apple (AAPL)', 'value': 'AAPL'}
+            ],
+            value='2330.TW',
+            style={'width': '50%', 'margin': 'auto'}
+        ),
+        dcc.Dropdown(
+            id='chart-type-dropdown',
+            options=[
+                {'label': 'KD指標圖', 'value': 'KD'},
+                {'label': '均價指標圖', 'value': 'MA'},
+                {'label': 'RSI', 'value': 'RSI'},
+                {'label': '常態分佈圖', 'value': 'Normal Distribution'},
+                {'label': '盒鬚圖', 'value': 'Boxplot'},
+                {'label': '股價熱力圖', 'value': 'Heatmap'}
+            ],
+            value='MA',
+            style={'width': '50%', 'margin': 'auto'}
+        ),
+        dcc.DatePickerRange(
+            id='date-picker-range',
+            start_date='2024-01-01',
+            end_date='2024-07-30',
+            style={'width': '50%', 'margin': 'auto'}
+        ),
+        html.Button('Get Chart', id='submit-button', n_clicks=0, style={'display': 'block', 'margin': '20px auto'}),
+        html.Div(id='single-chart-output', style={'textAlign': 'center', 'marginTop': '20px'})
+    ])
+
+    multi_page = html.Div([
+        html.H1('Multi Stock Chart API'),
+        dcc.Dropdown(
+            id='multi-tickers-dropdown',
+            options=[
+                {'label': 'TSMC(ADR)xNVIDIA', 'value': 'TSM_NVDA'},
+                {'label': 'TSMC(ADR)xAPPLE', 'value': 'TSM_AAPL'},
+                {'label': 'NVIDIAxTSMC(ADR)', 'value': 'NVDA_TSM'},
+                {'label': 'APPLExTSMC(ADR)', 'value': 'AAPL_TSM'}
+            ],
+            value='TSM_NVDA',
+            style={'width': '50%', 'margin': 'auto'}
+        ),
+        dcc.Dropdown(
+            id='multi-chart-type-dropdown',
+            options=[
+                {'label': '散佈圖', 'value': 'Scatter'},
+                {'label': '迴歸分析圖', 'value': 'Regression'},
+                {'label': '多股票價格圖', 'value': 'Multi-Price'},
+                {'label': '決策樹圖', 'value': 'Decision Tree'}
+            ],
+            value='Regression',
+            style={'width': '50%', 'margin': 'auto'}
+        ),
+        dcc.DatePickerRange(
+            id='multi-date-picker-range',
+            start_date='2022-07-01',
+            end_date='2024-07-30',
+            style={'width': '50%', 'margin': 'auto'}
+        ),
+        html.Button('Get Multi-Stock Chart', id='multi-submit-button', n_clicks=0, style={'display': 'block', 'margin': '20px auto'}),
+        html.Div(id='multi-chart-output', style={'textAlign': 'center', 'marginTop': '20px'})
+    ])
+
+    @app.callback(dd.Output('page-content', 'children'), [dd.Input('url', 'pathname')])
+    def display_page(pathname):
+        if pathname == '/single':
+            return single_page
+        elif pathname == '/multi':
+            return multi_page
+        else:
+            return index_page
+
+    @app.callback(
+        dd.Output('single-chart-output', 'children'),
+        [dd.Input('submit-button', 'n_clicks')],
+        [dd.State('stock-dropdown', 'value'),
+         dd.State('chart-type-dropdown', 'value'),
+         dd.State('date-picker-range', 'start_date'),
+         dd.State('date-picker-range', 'end_date')]
+    )
+    def update_single_chart(n_clicks, stock, chart_type, start_date, end_date):
+        if n_clicks > 0:
+            payload = {
+                'stock': stock,
+                'chartType': chart_type,
+                'startDate': start_date,
+                'endDate': end_date
+            }
+
+            response = requests.post('http://127.0.0.1:5000/api/single_plot', json=payload)
+
+            if response.status_code == 200:
+                img_data = response.json().get('image', '')
+                return html.Img(src='data:image/png;base64,{}'.format(img_data))
+            else:
+                return html.Div('Error fetching data from API', style={'color': 'red'})
+    
+        return html.Div('Please submit the form to see the chart.')
+
+    @app.callback(
+        dd.Output('multi-chart-output', 'children'),
+        [dd.Input('multi-submit-button', 'n_clicks')],
+        [dd.State('multi-tickers-dropdown', 'value'),
+         dd.State('multi-chart-type-dropdown', 'value'),
+         dd.State('multi-date-picker-range', 'start_date'),
+         dd.State('multi-date-picker-range', 'end_date')]
+    )
+    def update_multi_chart(n_clicks, tickers, chart_type, start_date, end_date):
+        if n_clicks > 0:
+            payload = {
+                'tickers': tickers,
+                'chartType': chart_type,
+                'startDate': start_date,
+                'endDate': end_date
+            }
+
+            response = requests.post('http://127.0.0.1:5000/api/multi_plot', json=payload)
+
+            if response.status_code == 200:
+                img_data = response.json().get('image', '')
+                return html.Img(src='data:image/png;base64,{}'.format(img_data))
+            else:
+                return html.Div('Error fetching data from API', style={'color': 'red'})
+            
+        return html.Div('Please submit the form to see the chart.')
+
+    return app
+
+# 創建 Dash 應用並將其綁定到 Flask 服務器
+app = create_dash_app(server)
+
+# 啟動 Flask 服務器
 if __name__ == '__main__':
-    app.run(debug=True)
+    server.run(debug=True)
