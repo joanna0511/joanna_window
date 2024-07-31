@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request
+from flask import Flask,render_template,request,session
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.serving import run_simple
 from dashboard.board1 import app1
@@ -8,8 +8,8 @@ import dashboard
 from auth.main import auth_blueprint
 import secrets
 
-app=Flask(__name__)
-app.config['SECRET_KEY']=secrets.token_hex(16)
+app = Flask(__name__)
+app.config['SECRET_KEY'] = secrets.token_hex(16)
 app.register_blueprint(auth_blueprint)
 
 application = DispatcherMiddleware(app,{
@@ -19,7 +19,11 @@ application = DispatcherMiddleware(app,{
 
 @app.route("/")
 def index():
-    return render_template("index.html.jinja")
+    if 'username' in session:
+        user = session['username']
+    else:
+        user = None
+    return render_template("index.html.jinja",username = user)
 
 @app.route("/index1")
 def index1():
@@ -37,8 +41,7 @@ def index1():
     
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('error.html.jinja'),404
-
+    return render_template('error.html.jinja'), 404
 
 if __name__ == "__main__":
     run_simple("localhost", 8080, application,use_debugger=True,use_reloader=True)
