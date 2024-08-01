@@ -7,29 +7,29 @@
 </head>
 
 <body>
-    <h1>Multi Stock Chart API</h1>
+    <h1>多股票圖形</h1>
     <div class="container">
         <div class="menu">
             <form id="multi-stock-form">
-                <label for="multi-tickers">Stocks:</label>
+                <label for="multi-tickers">選擇股票:</label>
                 <select id="multi-tickers" name="multi-tickers">
                     <option value="TSM_NVDA">TSMC(ADR)xNVIDIA</option>
                     <option value="TSM_AAPL">TSMC(ADR)xAPPLE</option>
                     <option value="NVDA_TSM">NVIDIAxTSMC(ADR)</option>
                     <option value="AAPL_TSM">APPLExTSMC(ADR)</option>
                 </select><br>
-                <label for="multiChartType">Chart Type:</label>
+                <label for="multiChartType">選擇圖形:</label>
                 <select id="multiChartType" name="multiChartType">
                     <option value="Scatter">散佈圖</option>
                     <option value="Regression">迴歸分析圖</option>
                     <option value="Multi-Price">多股票價格圖</option>
                     <option value="Decision Tree">決策樹圖</option>
                 </select><br>
-                <label for="multiStartDate">Start Date:</label>
+                <label for="multiStartDate">開始日期:</label>
                 <input type="date" id="multiStartDate" name="multiStartDate"><br>
-                <label for="multiEndDate">End Date:</label>
+                <label for="multiEndDate">結束日期:</label>
                 <input type="date" id="multiEndDate" name="multiEndDate"><br>
-                <button type="submit">Get Multi-Stock Chart</button>
+                <button type="submit">取得多股票圖形</button>
             </form>
         </div>
         <div class="chart">
