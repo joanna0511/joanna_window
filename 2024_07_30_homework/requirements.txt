@@ -3,3 +3,7 @@ yfinance
 matplotlib.pyplot
 matplotlib.backends.backend_tkagg
 seaborn
+dash
+html
+dcc
+dash_bootstrap_component
