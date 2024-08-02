@@ -1,13 +1,13 @@
-# 股價指標圖形整合系統
-## 啟始畫面
-![first](./img/First.PNG)
-## 圖形種類
-![total](./img/total9.PNG)
+# 股價指標圖形整合系統(Web版)
+## 首頁畫面
+![first](./img/home.PNG)
+## 單一股票選項
+![first](./img/single.PNG)
+## 多股票選項
+![total](./img/multiple.PNG)
 ## 一、專案組名：股價指標圖形整合系統
 ## 二、專案組員：周筱蘭
-## 三、專案網址：
-   * https://github.com/joanna0511/joanna_window/tree/main/Homework/issue264
-## 四、專案說明：
+## 三、專案說明：
 _______
 ## 股價整合系統
 
@@ -74,5 +74,4 @@ _______
 
 本系統適合需要分析股票數據的金融從業者、投資者和研究人員，能夠幫助他們快速掌握股票市場的變化和趨勢，做出更明智的投資決策。
 
-Youtube影片連結：https://youtu.be/JtN4NGMQL0U
 _______
