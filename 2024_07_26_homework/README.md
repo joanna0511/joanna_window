@@ -1,10 +1,10 @@
 # 股價指標圖形整合系統(Web版)
 ## 首頁畫面
-![first](./img/home.PNG)
+![first](./img/home.png)
 ## 單一股票選項
-![first](./img/single.PNG)
+![index1](./img/single.png)
 ## 多股票選項
-![total](./img/multiple.PNG)
+![index2](./img/multiple.png)
 ## 一、專案組名：股價指標圖形整合系統
 ## 二、專案組員：周筱蘭
 ## 三、專案說明：
